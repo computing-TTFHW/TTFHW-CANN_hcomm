@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HCOMM TTFHW View</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --panel: #fffaf0;
+      --ink: #1e1d1b;
+      --muted: #6b665e;
+      --line: #d7ccba;
+      --accent: #0f766e;
+      --accent-2: #b45309;
+      --fail: #b42318;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Source Sans 3", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(180,83,9,0.12), transparent 28%),
+        radial-gradient(circle at left center, rgba(15,118,110,0.12), transparent 35%),
+        var(--bg);
+    }
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    h1, h2, h3 { margin: 0 0 12px; }
+    .lede {
+      margin: 10px 0 24px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(15,118,110,0.12);
+      color: var(--accent);
+    }
+    .status.failed {
+      background: rgba(180,35,24,0.12);
+      color: var(--fail);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    .cards {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      margin: 22px 0 28px;
+    }
+    .card, .panel, .phase-card {
+      background: rgba(255,250,240,0.86);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 12px 32px rgba(30,29,27,0.05);
+    }
+    .card {
+      padding: 16px;
+      min-height: 104px;
+    }
+    .card-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .card-value {
+      font-size: 24px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+    .two-col {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      margin-bottom: 18px;
+    }
+    .panel {
+      padding: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      width: 180px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .steps th, .steps td { width: auto; }
+    .steps thead th {
+      color: var(--ink);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .bar-wrap {
+      width: 100%;
+      min-width: 160px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(15,118,110,0.12);
+      overflow: hidden;
+    }
+    .bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 999px;
+    }
+    code, pre {
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(30,29,27,0.04);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      max-height: 480px;
+      overflow: auto;
+    }
+    .muted { color: var(--muted); }
+    .path {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(30,29,27,0.04);
+      border: 1px solid var(--line);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="status failed">failed</div>
+    <h1>HCOMM TTFHW Visualization</h1>
+    <p class="lede">
+      Metric <strong>first_ut_success</strong> from <strong>2026-04-25T16:46:01+08:00</strong>
+      to <strong>2026-04-26T09:44:24+08:00</strong>. Source JSON:
+      <span class="path">/home/wpf/codex/TTFHW-CANN_hcomm/output/ttfhw/first_ut_success/20260425T164601+0800.json</span>
+    </p>
+
+    <section class="grid cards">
+      <div class='card'><div class='card-label'>Metric</div><div class='card-value'>first_ut_success</div></div>
+<div class='card'><div class='card-label'>Status</div><div class='card-value'>failed</div></div>
+<div class='card'><div class='card-label'>Total</div><div class='card-value'>977m 59.8s</div></div>
+<div class='card'><div class='card-label'>First Run</div><div class='card-value'>977m 59.0s</div></div>
+<div class='card'><div class='card-label'>Incremental</div><div class='card-value'>-</div></div>
+<div class='card'><div class='card-label'>Execution</div><div class='card-value'>docker</div></div>
+<div class='card'><div class='card-label'>Branch</div><div class='card-value'>issue-2-build-optimization-foundation</div></div>
+<div class='card'><div class='card-label'>Dirty</div><div class='card-value'>True</div></div>
+    </section>
+
+    <section class="grid two-col">
+      <div class="panel">
+        <h2>Environment</h2>
+        <table><tr><th>docker_image</th><td>swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031</td></tr>
+<tr><th>ccache_dir</th><td>/home/wpf/.cache/hcomm-ttfhw-ccache</td></tr></table>
+      </div>
+      <div class="panel">
+        <h2>Git</h2>
+        <table><tr><th>branch</th><td>issue-2-build-optimization-foundation</td></tr>
+<tr><th>commit</th><td>3a2714fc30986154b00995e707bb5a251184406f</td></tr>
+<tr><th>dirty</th><td>True</td></tr></table>
+      </div>
+    </section>
+
+    <section class="panel" style="margin: 18px 0;">
+      <h2>Steps</h2>
+      <table class="steps">
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Status</th>
+            <th>Duration</th>
+            <th>Share</th>
+            <th>Command</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>ccache_zero</td><td>success</td><td>0.404s</td><td><div class='bar-wrap'><div class='bar' style='width:1.50%'></div></div></td><td><code>ccache -z</code></td></tr>
+<tr><td>ccache_before</td><td>success</td><td>0.415s</td><td><div class='bar-wrap'><div class='bar' style='width:1.50%'></div></div></td><td><code>ccache -s</code></td></tr>
+<tr><td>first_run</td><td>failed</td><td>977m 59.0s</td><td><div class='bar-wrap'><div class='bar' style='width:100.00%'></div></div></td><td><code>time bash build.sh --ut --noclean</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="grid two-col">
+      <div class="panel">
+        <h2>ccache</h2>
+        <table><tr><th>cache_hit_direct</th><td>-</td></tr>
+<tr><th>cache_hit_preprocessed</th><td>-</td></tr>
+<tr><th>cache_miss</th><td>-</td></tr>
+<tr><th>hit_rate</th><td>-</td></tr></table>
+        <h3 style="margin-top:16px;">After Incremental Run</h3>
+        <pre></pre>
+      </div>
+      <div class="panel">
+        <h2>Raw JSON</h2>
+        <pre>{
+  &quot;schema_version&quot;: &quot;2.0&quot;,
+  &quot;skill&quot;: &quot;hcomm-local-dev-ttfhw&quot;,
+  &quot;repo&quot;: &quot;hcomm&quot;,
+  &quot;metric&quot;: &quot;first_ut_success&quot;,
+  &quot;command&quot;: &quot;time bash build.sh --ut --noclean&quot;,
+  &quot;status&quot;: &quot;failed&quot;,
+  &quot;started_at&quot;: &quot;2026-04-25T16:46:01+08:00&quot;,
+  &quot;ended_at&quot;: &quot;2026-04-26T09:44:24+08:00&quot;,
+  &quot;execution_mode&quot;: &quot;docker&quot;,
+  &quot;environment&quot;: {
+    &quot;docker_image&quot;: &quot;swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031&quot;,
+    &quot;ccache_dir&quot;: &quot;/home/wpf/.cache/hcomm-ttfhw-ccache&quot;
+  },
+  &quot;git&quot;: {
+    &quot;branch&quot;: &quot;issue-2-build-optimization-foundation&quot;,
+    &quot;commit&quot;: &quot;3a2714fc30986154b00995e707bb5a251184406f&quot;,
+    &quot;dirty&quot;: true
+  },
+  &quot;steps&quot;: [
+    {
+      &quot;name&quot;: &quot;ccache_zero&quot;,
+      &quot;command&quot;: &quot;ccache -z&quot;,
+      &quot;status&quot;: &quot;success&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;started_at&quot;: &quot;2026-04-25T16:46:02+08:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-04-25T16:46:02+08:00&quot;,
+      &quot;seconds&quot;: 0.404
+    },
+    {
+      &quot;name&quot;: &quot;ccache_before&quot;,
+      &quot;command&quot;: &quot;ccache -s&quot;,
+      &quot;status&quot;: &quot;success&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;started_at&quot;: &quot;2026-04-25T16:46:02+08:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-04-25T16:46:02+08:00&quot;,
+      &quot;seconds&quot;: 0.415
+    },
+    {
+      &quot;name&quot;: &quot;first_run&quot;,
+      &quot;command&quot;: &quot;time bash build.sh --ut --noclean&quot;,
+      &quot;status&quot;: &quot;failed&quot;,
+      &quot;returncode&quot;: 2,
+      &quot;started_at&quot;: &quot;2026-04-25T16:46:02+08:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-04-26T09:44:24+08:00&quot;,
+      &quot;seconds&quot;: 58678.951
+    }
+  ],
+  &quot;ccache&quot;: {
+    &quot;before&quot;: &quot;Summary:\n  Hits:               0 /    0\n    Direct:           0 /    0\n    Preprocessed:     0 /    0\n  Misses:             0\n    Direct:           0\n    Preprocessed:     0\nPrimary storage:\n  Hits:               0 /    0\n  Misses:             0\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n&quot;
+  },
+  &quot;result&quot;: {
+    &quot;first_run_seconds&quot;: 58678.951,
+    &quot;incremental_run_seconds&quot;: null
+  },
+  &quot;artifacts&quot;: {
+    &quot;json&quot;: &quot;/home/wpf/codex/hcomm/output/ttfhw/first_ut_success/20260425T164601+0800.json&quot;,
+    &quot;stdout_log&quot;: &quot;/home/wpf/codex/hcomm/output/ttfhw/logs/first_ut_success_20260425T164601+0800.log&quot;
+  },
+  &quot;error&quot;: &quot;first run failed&quot;,
+  &quot;total_seconds&quot;: 58679.785
+}</pre>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
