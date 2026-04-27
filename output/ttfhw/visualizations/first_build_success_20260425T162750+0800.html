@@ -242,10 +242,11 @@
       <h2>ccache Summary</h2>
       <table>
         <tbody>
-          <tr><th>Direct hits</th><td>0</td></tr>
-          <tr><th>Preprocessed hits</th><td>12</td></tr>
-          <tr><th>Misses</th><td>-</td></tr>
-          <tr><th>Hit rate</th><td>-</td></tr>
+          <tr><th>Incremental delta hit rate</th><td>N/A - no ccache lookups during incremental run</td></tr>
+          <tr><th>Incremental ccache lookups</th><td>0</td></tr>
+          <tr><th>Cumulative hit rate after incremental</th><td>0.78%</td></tr>
+          <tr><th>Cumulative hits after incremental</th><td>12</td></tr>
+          <tr><th>Cumulative lookups after incremental</th><td>1539</td></tr>
         </tbody>
       </table>
     </section>
@@ -351,7 +352,26 @@
     &quot;after_first_run&quot;: &quot;Summary:\n  Hits:              12 / 1539 (0.78 %)\n    Direct:           0 / 1539 (0.00 %)\n    Preprocessed:    12 / 1539 (0.78 %)\n  Misses:          1527\n    Direct:        1539\n    Preprocessed:  1527\n  Uncacheable:       45\nPrimary storage:\n  Hits:              12 / 3078 (0.39 %)\n  Misses:          3066\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n&quot;,
     &quot;after_incremental_run&quot;: &quot;Summary:\n  Hits:              12 / 1539 (0.78 %)\n    Direct:           0 / 1539 (0.00 %)\n    Preprocessed:    12 / 1539 (0.78 %)\n  Misses:          1527\n    Direct:        1539\n    Preprocessed:  1527\n  Uncacheable:       45\nPrimary storage:\n  Hits:              12 / 3078 (0.39 %)\n  Misses:          3066\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n&quot;,
     &quot;cache_hit_direct&quot;: &quot;0&quot;,
-    &quot;cache_hit_preprocessed&quot;: &quot;12&quot;
+    &quot;cache_hit_preprocessed&quot;: &quot;12&quot;,
+    &quot;after_first_run_summary&quot;: {
+      &quot;hits&quot;: 12,
+      &quot;lookups&quot;: 1539,
+      &quot;hit_rate&quot;: &quot;0.78%&quot;,
+      &quot;misses&quot;: 1527
+    },
+    &quot;after_incremental_run_summary&quot;: {
+      &quot;hits&quot;: 12,
+      &quot;lookups&quot;: 1539,
+      &quot;hit_rate&quot;: &quot;0.78%&quot;,
+      &quot;misses&quot;: 1527
+    },
+    &quot;incremental_run_delta&quot;: {
+      &quot;hits&quot;: 0,
+      &quot;lookups&quot;: 0,
+      &quot;hit_rate&quot;: null,
+      &quot;note&quot;: &quot;no ccache lookups during incremental run&quot;
+    },
+    &quot;incremental_cumulative_hit_rate&quot;: &quot;0.78%&quot;
   },
   &quot;result&quot;: {
     &quot;first_run_seconds&quot;: 1038.111,

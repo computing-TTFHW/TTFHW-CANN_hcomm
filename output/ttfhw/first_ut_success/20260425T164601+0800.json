@@ -47,7 +47,27 @@
     }
   ],
   "ccache": {
-    "before": "Summary:\n  Hits:               0 /    0\n    Direct:           0 /    0\n    Preprocessed:     0 /    0\n  Misses:             0\n    Direct:           0\n    Preprocessed:     0\nPrimary storage:\n  Hits:               0 /    0\n  Misses:             0\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n"
+    "before": "Summary:\n  Hits:               0 /    0\n    Direct:           0 /    0\n    Preprocessed:     0 /    0\n  Misses:             0\n    Direct:           0\n    Preprocessed:     0\nPrimary storage:\n  Hits:               0 /    0\n  Misses:             0\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n",
+    "after_first_run_summary": {
+      "hits": null,
+      "lookups": null,
+      "hit_rate": null,
+      "misses": null
+    },
+    "after_incremental_run_summary": {
+      "hits": null,
+      "lookups": null,
+      "hit_rate": null,
+      "misses": null
+    },
+    "incremental_run_delta": {
+      "hits": null,
+      "lookups": null,
+      "hit_rate": null,
+      "note": "incremental run was not executed"
+    },
+    "incremental_cumulative_hit_rate": null,
+    "incremental_delta_hit_rate": null
   },
   "result": {
     "first_run_seconds": 58678.951,

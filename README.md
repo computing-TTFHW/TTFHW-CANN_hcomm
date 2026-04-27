@@ -30,10 +30,10 @@ Direct report links:
 
 ## Current Results
 
-| Metric | Status | First run | Second incremental run | Notes |
-| --- | --- | ---: | ---: | --- |
-| `first_build_success` | Success | `1038.111s` | `4.728s` | Incremental build completed successfully. |
-| `first_ut_success` | Failed | `58678.951s` | `-` | First UT build failed, so the second incremental run was not executed. The raw log files are not stored in this repository. |
+| Metric | Status | First run | Second incremental run | Incremental cache | Notes |
+| --- | --- | ---: | ---: | --- | --- |
+| `first_build_success` | Success | `1038.111s` | `4.728s` | Delta hit rate: N/A, no ccache lookups. Cumulative hit rate after incremental: `0.78%`. | Incremental build completed successfully. |
+| `first_ut_success` | Failed | `58678.951s` | `-` | `-` | First UT build failed, so the second incremental run was not executed. The raw log files are not stored in this repository. |
 
 ## Measurement Environment
 

@@ -54,18 +54,50 @@ def git_info(repo_root):
 
 
 def parse_ccache_stats(text):
-    fields = {}
+    fields = parse_ccache_summary(text)
     patterns = {
         "cache_hit_direct": r"Direct:\s+(\d+)\s*/",
         "cache_hit_preprocessed": r"Preprocessed:\s+(\d+)\s*/",
         "cache_miss": r"Misses:\s+(\d+)\s*/",
-        "hit_rate": r"Hit rate:\s+([0-9.]+ ?%)",
     }
     for key, pattern in patterns.items():
         match = re.search(pattern, text)
         if match:
             fields[key] = match.group(1)
     return fields
+
+
+def parse_ccache_summary(text):
+    match = re.search(r"^\s*Hits:\s+(\d+)\s*/\s*(\d+)\s*\(([0-9.]+)\s*%\)", text or "", re.MULTILINE)
+    misses = re.search(r"^\s*Misses:\s+(\d+)\s*$", text or "", re.MULTILINE)
+    return {
+        "hits": int(match.group(1)) if match else None,
+        "lookups": int(match.group(2)) if match else None,
+        "hit_rate": f"{match.group(3)}%" if match else None,
+        "misses": int(misses.group(1)) if misses else None,
+    }
+
+
+def ccache_delta(before, after):
+    if before.get("hits") is None or after.get("hits") is None:
+        return {"hits": None, "lookups": None, "hit_rate": None, "note": "ccache stats unavailable"}
+    hits = after["hits"] - before["hits"]
+    lookups = after["lookups"] - before["lookups"]
+    if lookups <= 0:
+        return {"hits": hits, "lookups": lookups, "hit_rate": None, "note": "no ccache lookups during incremental run"}
+    return {"hits": hits, "lookups": lookups, "hit_rate": f"{hits / lookups * 100:.2f}%", "note": ""}
+
+
+def add_incremental_ccache_stats(payload):
+    ccache = payload["ccache"]
+    after_first = parse_ccache_summary(ccache.get("after_first_run", ""))
+    after_incremental = parse_ccache_summary(ccache.get("after_incremental_run", ""))
+    delta = ccache_delta(after_first, after_incremental)
+    ccache["after_first_run_summary"] = after_first
+    ccache["after_incremental_run_summary"] = after_incremental
+    ccache["incremental_run_delta"] = delta
+    ccache["incremental_cumulative_hit_rate"] = after_incremental.get("hit_rate")
+    ccache["incremental_delta_hit_rate"] = delta.get("hit_rate")
 
 
 class Runner:
@@ -198,11 +230,21 @@ def run_metric(args):
         payload["steps"].append(step)
         payload["ccache"]["after_incremental_run"] = result.stdout + result.stderr
         payload["ccache"].update(parse_ccache_stats(payload["ccache"]["after_incremental_run"]))
+        add_incremental_ccache_stats(payload)
         payload["status"] = "success"
     except Exception as exc:
         payload["status"] = "failed"
         payload["error"] = str(exc)
     finally:
+        if payload["result"]["incremental_run_seconds"] is None:
+            payload["ccache"].setdefault("incremental_run_delta", {
+                "hits": None,
+                "lookups": None,
+                "hit_rate": None,
+                "note": "incremental run was not executed",
+            })
+            payload["ccache"].setdefault("incremental_cumulative_hit_rate", None)
+            payload["ccache"].setdefault("incremental_delta_hit_rate", None)
         payload["ended_at"] = now_iso()
         payload["total_seconds"] = round(time.perf_counter() - started, 3)
         json_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

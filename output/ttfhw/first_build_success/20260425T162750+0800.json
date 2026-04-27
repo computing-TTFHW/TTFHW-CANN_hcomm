@@ -78,7 +78,26 @@
     "after_first_run": "Summary:\n  Hits:              12 / 1539 (0.78 %)\n    Direct:           0 / 1539 (0.00 %)\n    Preprocessed:    12 / 1539 (0.78 %)\n  Misses:          1527\n    Direct:        1539\n    Preprocessed:  1527\n  Uncacheable:       45\nPrimary storage:\n  Hits:              12 / 3078 (0.39 %)\n  Misses:          3066\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n",
     "after_incremental_run": "Summary:\n  Hits:              12 / 1539 (0.78 %)\n    Direct:           0 / 1539 (0.00 %)\n    Preprocessed:    12 / 1539 (0.78 %)\n  Misses:          1527\n    Direct:        1539\n    Preprocessed:  1527\n  Uncacheable:       45\nPrimary storage:\n  Hits:              12 / 3078 (0.39 %)\n  Misses:          3066\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n",
     "cache_hit_direct": "0",
-    "cache_hit_preprocessed": "12"
+    "cache_hit_preprocessed": "12",
+    "after_first_run_summary": {
+      "hits": 12,
+      "lookups": 1539,
+      "hit_rate": "0.78%",
+      "misses": 1527
+    },
+    "after_incremental_run_summary": {
+      "hits": 12,
+      "lookups": 1539,
+      "hit_rate": "0.78%",
+      "misses": 1527
+    },
+    "incremental_run_delta": {
+      "hits": 0,
+      "lookups": 0,
+      "hit_rate": null,
+      "note": "no ccache lookups during incremental run"
+    },
+    "incremental_cumulative_hit_rate": "0.78%"
   },
   "result": {
     "first_run_seconds": 1038.111,

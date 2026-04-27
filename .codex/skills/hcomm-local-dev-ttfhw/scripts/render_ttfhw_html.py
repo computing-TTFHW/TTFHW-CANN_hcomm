@@ -111,6 +111,16 @@ def render_execution_summary(data):
     """
 
 
+def incremental_cache_label(ccache):
+    delta = ccache.get("incremental_run_delta") or {}
+    if delta.get("hit_rate"):
+        return delta.get("hit_rate")
+    note = delta.get("note")
+    if note:
+        return f"N/A - {note}"
+    return "-"
+
+
 def render_failure_analysis(data):
     analysis = data.get("failure_analysis")
     if not analysis:
@@ -357,10 +367,11 @@ def render_html(data, source_json):
       <h2>ccache Summary</h2>
       <table>
         <tbody>
-          <tr><th>Direct hits</th><td>{esc(ccache.get("cache_hit_direct", "-"))}</td></tr>
-          <tr><th>Preprocessed hits</th><td>{esc(ccache.get("cache_hit_preprocessed", "-"))}</td></tr>
-          <tr><th>Misses</th><td>{esc(ccache.get("cache_miss", "-"))}</td></tr>
-          <tr><th>Hit rate</th><td>{esc(ccache.get("hit_rate", "-"))}</td></tr>
+          <tr><th>Incremental delta hit rate</th><td>{esc(incremental_cache_label(ccache))}</td></tr>
+          <tr><th>Incremental ccache lookups</th><td>{esc((ccache.get("incremental_run_delta") or {}).get("lookups", "-"))}</td></tr>
+          <tr><th>Cumulative hit rate after incremental</th><td>{esc(ccache.get("incremental_cumulative_hit_rate", "-"))}</td></tr>
+          <tr><th>Cumulative hits after incremental</th><td>{esc((ccache.get("after_incremental_run_summary") or {}).get("hits", "-"))}</td></tr>
+          <tr><th>Cumulative lookups after incremental</th><td>{esc((ccache.get("after_incremental_run_summary") or {}).get("lookups", "-"))}</td></tr>
         </tbody>
       </table>
     </section>

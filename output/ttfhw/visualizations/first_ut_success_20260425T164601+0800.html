@@ -242,10 +242,11 @@
       <h2>ccache Summary</h2>
       <table>
         <tbody>
-          <tr><th>Direct hits</th><td>-</td></tr>
-          <tr><th>Preprocessed hits</th><td>-</td></tr>
-          <tr><th>Misses</th><td>-</td></tr>
-          <tr><th>Hit rate</th><td>-</td></tr>
+          <tr><th>Incremental delta hit rate</th><td>N/A - incremental run was not executed</td></tr>
+          <tr><th>Incremental ccache lookups</th><td>-</td></tr>
+          <tr><th>Cumulative hit rate after incremental</th><td>-</td></tr>
+          <tr><th>Cumulative hits after incremental</th><td>-</td></tr>
+          <tr><th>Cumulative lookups after incremental</th><td>-</td></tr>
         </tbody>
       </table>
     </section>
@@ -334,7 +335,27 @@
     }
   ],
   &quot;ccache&quot;: {
-    &quot;before&quot;: &quot;Summary:\n  Hits:               0 /    0\n    Direct:           0 /    0\n    Preprocessed:     0 /    0\n  Misses:             0\n    Direct:           0\n    Preprocessed:     0\nPrimary storage:\n  Hits:               0 /    0\n  Misses:             0\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n&quot;
+    &quot;before&quot;: &quot;Summary:\n  Hits:               0 /    0\n    Direct:           0 /    0\n    Preprocessed:     0 /    0\n  Misses:             0\n    Direct:           0\n    Preprocessed:     0\nPrimary storage:\n  Hits:               0 /    0\n  Misses:             0\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n&quot;,
+    &quot;after_first_run_summary&quot;: {
+      &quot;hits&quot;: null,
+      &quot;lookups&quot;: null,
+      &quot;hit_rate&quot;: null,
+      &quot;misses&quot;: null
+    },
+    &quot;after_incremental_run_summary&quot;: {
+      &quot;hits&quot;: null,
+      &quot;lookups&quot;: null,
+      &quot;hit_rate&quot;: null,
+      &quot;misses&quot;: null
+    },
+    &quot;incremental_run_delta&quot;: {
+      &quot;hits&quot;: null,
+      &quot;lookups&quot;: null,
+      &quot;hit_rate&quot;: null,
+      &quot;note&quot;: &quot;incremental run was not executed&quot;
+    },
+    &quot;incremental_cumulative_hit_rate&quot;: null,
+    &quot;incremental_delta_hit_rate&quot;: null
   },
   &quot;result&quot;: {
     &quot;first_run_seconds&quot;: 58678.951,
