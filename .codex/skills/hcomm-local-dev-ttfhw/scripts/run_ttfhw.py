@@ -68,24 +68,12 @@ def parse_ccache_stats(text):
     return fields
 
 
-def append_log(log_path, title, command, result):
-    with log_path.open("a", encoding="utf-8") as handle:
-        handle.write(f"\n===== {title} =====\n")
-        handle.write(f"$ {command}\n")
-        handle.write(f"[returncode={result.returncode}]\n")
-        handle.write(result.stdout)
-        handle.write(result.stderr)
-        if not result.stderr.endswith("\n"):
-            handle.write("\n")
-
-
 class Runner:
-    def __init__(self, repo_root, execution_mode, ccache_dir, docker_image, log_path):
+    def __init__(self, repo_root, execution_mode, ccache_dir, docker_image):
         self.repo_root = repo_root
         self.execution_mode = execution_mode
         self.ccache_dir = Path(ccache_dir).expanduser()
         self.docker_image = docker_image
-        self.log_path = log_path
 
     def run(self, name, command):
         started_at = now_iso()
@@ -93,7 +81,6 @@ class Runner:
         result = self._run(command)
         seconds = round(time.perf_counter() - started, 3)
         ended_at = now_iso()
-        append_log(self.log_path, name, command, result)
         return {
             "name": name,
             "command": command,
@@ -147,11 +134,8 @@ def run_metric(args):
     command = METRICS[metric]
     ts = timestamp_slug()
     out_dir = repo_root / "output" / "ttfhw" / metric
-    log_dir = repo_root / "output" / "ttfhw" / "logs"
     json_path = out_dir / f"{ts}.json"
-    log_path = log_dir / f"{metric}_{ts}.log"
     out_dir.mkdir(parents=True, exist_ok=True)
-    log_dir.mkdir(parents=True, exist_ok=True)
 
     payload = {
         "schema_version": "2.0",
@@ -176,12 +160,11 @@ def run_metric(args):
         },
         "artifacts": {
             "json": str(json_path),
-            "stdout_log": str(log_path),
         },
     }
 
     started = time.perf_counter()
-    runner = Runner(repo_root, args.execution_mode, args.ccache_dir, args.docker_image, log_path)
+    runner = Runner(repo_root, args.execution_mode, args.ccache_dir, args.docker_image)
     try:
         if args.execution_mode == "docker" and shutil.which("docker") is None:
             raise RuntimeError("docker not found in PATH")
@@ -243,7 +226,6 @@ def main():
         "first_run_seconds": payload["result"]["first_run_seconds"],
         "incremental_run_seconds": payload["result"]["incremental_run_seconds"],
         "json": payload["artifacts"]["json"],
-        "log": payload["artifacts"]["stdout_log"],
     }, ensure_ascii=False))
     return 0 if payload["status"] == "success" else 1
 

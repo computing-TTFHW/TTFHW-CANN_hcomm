@@ -33,7 +33,7 @@ For each metric, run the command twice in the same workspace:
 - Mount a persistent ccache directory to `/home/jenkins/.cache/ccache` when running in Docker.
 - Run `ccache -z` before the first run.
 - Run `ccache -s` before the first run, after the first run, and after the second run.
-- Always write JSON and log files under `output/ttfhw/`, even on failure.
+- Always write JSON result files under `output/ttfhw/`, even on failure.
 - Do not add extra TTFHW scenarios unless the user explicitly changes the metric definition.
 
 ## Script
@@ -52,7 +52,7 @@ The script records:
 - second-run incremental duration
 - ccache stats
 - git branch, commit, and dirty state
-- JSON and combined stdout/stderr log paths
+- JSON artifact path
 
 ## Output
 
@@ -61,7 +61,6 @@ The script writes results under:
 ```text
 output/ttfhw/first_build_success/
 output/ttfhw/first_ut_success/
-output/ttfhw/logs/
 ```
 
 ## Guardrails

@@ -54,8 +54,7 @@
     "incremental_run_seconds": null
   },
   "artifacts": {
-    "json": "/home/wpf/codex/hcomm/output/ttfhw/first_ut_success/20260425T164601+0800.json",
-    "stdout_log": "/home/wpf/codex/hcomm/output/ttfhw/logs/first_ut_success_20260425T164601+0800.log"
+    "json": "/home/wpf/codex/hcomm/output/ttfhw/first_ut_success/20260425T164601+0800.json"
   },
   "error": "first run failed",
   "total_seconds": 58679.785

@@ -1,6 +1,6 @@
 # TTFHW-CANN_hcomm
 
-This repository stores the TTFHW measurement skill, raw validation artifacts, and HTML visualizations for the CANN `hcomm` project.
+This repository stores the TTFHW measurement skill, raw JSON artifacts, and HTML visualizations for the CANN `hcomm` project.
 
 GitHub Pages site:
 
@@ -33,7 +33,7 @@ Direct report links:
 | Metric | Status | First run | Second incremental run | Notes |
 | --- | --- | ---: | ---: | --- |
 | `first_build_success` | Success | `1038.111s` | `4.728s` | Incremental build completed successfully. |
-| `first_ut_success` | Failed | `58678.951s` | `-` | First UT build failed, so the second incremental run was not executed. Logs show multiple `cc1plus` processes killed during compilation, consistent with resource pressure/OOM. |
+| `first_ut_success` | Failed | `58678.951s` | `-` | First UT build failed, so the second incremental run was not executed. The raw log files are not stored in this repository. |
 
 ## Repository Layout
 
@@ -49,9 +49,6 @@ output/ttfhw/first_build_success/
 
 output/ttfhw/first_ut_success/
   Raw JSON result for the UT metric.
-
-output/ttfhw/logs/
-  Captured stdout/stderr logs for each measurement.
 
 output/ttfhw/visualizations/
   Standalone HTML reports generated from the JSON files.
