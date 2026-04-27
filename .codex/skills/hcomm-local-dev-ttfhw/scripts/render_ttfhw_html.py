@@ -67,7 +67,7 @@ def render_failure_analysis(data):
         if not failure:
             return ""
         return f"""
-    <section class="panel failure">
+    <section id="failure-analysis" class="panel failure">
       <h2>Failure</h2>
       <p>{esc(failure)}</p>
     </section>
@@ -75,7 +75,7 @@ def render_failure_analysis(data):
 
     evidence = "".join(f"<li>{esc(item)}</li>" for item in analysis.get("evidence", []))
     return f"""
-    <section class="panel failure">
+    <section id="failure-analysis" class="panel failure">
       <h2>Failure Analysis</h2>
       <table>
         <tbody>
@@ -321,14 +321,14 @@ def render_html(data, source_json):
       Source JSON: <code>{esc(source_json)}</code>
     </p>
 
+    {failure_analysis}
+
     <section class="runs" aria-label="first and incremental run comparison">
       {run_card("First Execution", first_step, first_seconds, command, "not executed")}
       {run_card("Second Incremental Execution", incremental_step, incremental_seconds, command, "not executed because first execution failed")}
     </section>
 
     {comparison}
-
-    {failure_analysis}
 
     <section class="panel">
       <h2>ccache Summary</h2>
