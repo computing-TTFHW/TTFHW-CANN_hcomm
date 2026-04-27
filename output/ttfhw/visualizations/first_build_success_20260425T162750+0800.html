@@ -3,238 +3,267 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HCOMM TTFHW View</title>
+  <title>first_build_success - HCOMM TTFHW</title>
   <style>
     :root {
-      --bg: #f5f1e8;
-      --panel: #fffaf0;
-      --ink: #1e1d1b;
-      --muted: #6b665e;
-      --line: #d7ccba;
-      --accent: #0f766e;
-      --accent-2: #b45309;
-      --fail: #b42318;
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #dadce0;
+      --accent: #0b6bcb;
+      --ok: #137333;
+      --fail: #b3261e;
+      --warn: #8a5a00;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: "IBM Plex Sans", "Source Sans 3", sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       color: var(--ink);
-      background:
-        radial-gradient(circle at top right, rgba(180,83,9,0.12), transparent 28%),
-        radial-gradient(circle at left center, rgba(15,118,110,0.12), transparent 35%),
-        var(--bg);
+      background: var(--bg);
     }
-    .page {
-      max-width: 1200px;
+
+    main {
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 32px 20px 56px;
+      padding: 40px 20px 56px;
     }
-    h1, h2, h3 { margin: 0 0 12px; }
+
+    h1 {
+      margin: 12px 0 8px;
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+    }
+
     .lede {
-      margin: 10px 0 24px;
+      margin: 0 0 24px;
       color: var(--muted);
       line-height: 1.5;
     }
-    .status {
+
+    .pill {
       display: inline-block;
-      padding: 6px 10px;
+      padding: 4px 9px;
       border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: rgba(15,118,110,0.12);
-      color: var(--accent);
-    }
-    .status.failed {
-      background: rgba(180,35,24,0.12);
-      color: var(--fail);
-    }
-    .grid {
-      display: grid;
-      gap: 16px;
-    }
-    .cards {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      margin: 22px 0 28px;
-    }
-    .card, .panel, .phase-card {
-      background: rgba(255,250,240,0.86);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 12px 32px rgba(30,29,27,0.05);
-    }
-    .card {
-      padding: 16px;
-      min-height: 104px;
-    }
-    .card-label {
-      color: var(--muted);
       font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 10px;
-    }
-    .card-value {
-      font-size: 24px;
       font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .success { color: var(--ok); background: #e6f4ea; }
+    .failed { color: var(--fail); background: #fce8e6; }
+    .not-run { color: var(--warn); background: #fef7e0; }
+
+    .runs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin: 24px 0 16px;
+    }
+
+    .run-card, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .run-card {
+      padding: 22px;
+    }
+
+    .run-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .run-title {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .duration {
+      margin-bottom: 14px;
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .command {
+      color: var(--muted);
+      font-size: 14px;
       word-break: break-word;
     }
-    .two-col {
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      margin-bottom: 18px;
+
+    code, pre {
+      font-family: "SFMono-Regular", Consolas, monospace;
     }
+
     .panel {
-      padding: 18px;
+      margin-top: 16px;
+      padding: 20px;
     }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .compare-grid .label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .compare-grid strong {
+      font-size: 28px;
+    }
+
+    .failure {
+      border-color: #f4b4ae;
+      background: #fff7f6;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
     }
+
     th, td {
-      text-align: left;
       padding: 10px 8px;
       border-bottom: 1px solid var(--line);
+      text-align: left;
       vertical-align: top;
     }
+
     th {
-      width: 180px;
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 700;
     }
-    .steps th, .steps td { width: auto; }
-    .steps thead th {
-      color: var(--ink);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+
+    details {
+      margin-top: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 18px;
     }
-    .bar-wrap {
-      width: 100%;
-      min-width: 160px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(15,118,110,0.12);
-      overflow: hidden;
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
     }
-    .bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border-radius: 999px;
-    }
-    code, pre {
-      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
-    }
+
     pre {
+      max-height: 520px;
+      overflow: auto;
       white-space: pre-wrap;
       word-break: break-word;
-      background: rgba(30,29,27,0.04);
-      border: 1px solid var(--line);
-      border-radius: 12px;
+      color: #303134;
+      background: #f1f3f4;
+      border-radius: 6px;
       padding: 14px;
-      max-height: 480px;
-      overflow: auto;
-    }
-    .muted { color: var(--muted); }
-    .path {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(30,29,27,0.04);
-      border: 1px solid var(--line);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 13px;
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="status success">success</div>
-    <h1>HCOMM TTFHW Visualization</h1>
+  <main>
+    <span class="pill success">success</span>
+    <h1>first_build_success</h1>
     <p class="lede">
-      Metric <strong>first_build_success</strong> from <strong>2026-04-25T16:27:50+08:00</strong>
-      to <strong>2026-04-25T16:45:54+08:00</strong>. Source JSON:
-      <span class="path">/home/wpf/codex/TTFHW-CANN_hcomm/output/ttfhw/first_build_success/20260425T162750+0800.json</span>
+      Fixed TTFHW command: <code>time bash build.sh --noclean</code><br>
+      Source JSON: <code>/home/wpf/codex/TTFHW-CANN_hcomm/output/ttfhw/first_build_success/20260425T162750+0800.json</code>
     </p>
 
-    <section class="grid cards">
-      <div class='card'><div class='card-label'>Metric</div><div class='card-value'>first_build_success</div></div>
-<div class='card'><div class='card-label'>Status</div><div class='card-value'>success</div></div>
-<div class='card'><div class='card-label'>Total</div><div class='card-value'>17m 24.9s</div></div>
-<div class='card'><div class='card-label'>First Run</div><div class='card-value'>17m 18.1s</div></div>
-<div class='card'><div class='card-label'>Incremental</div><div class='card-value'>4.728s</div></div>
-<div class='card'><div class='card-label'>Execution</div><div class='card-value'>docker</div></div>
-<div class='card'><div class='card-label'>Branch</div><div class='card-value'>issue-2-build-optimization-foundation</div></div>
-<div class='card'><div class='card-label'>Dirty</div><div class='card-value'>True</div></div>
+    <section class="runs" aria-label="first and incremental run comparison">
+      
+      <article class="run-card">
+        <div class="run-top">
+          <span class="run-title">First Execution</span>
+          <span class="pill success">success</span>
+        </div>
+        <div class="duration">17m 18.1s</div>
+        <div class="command"><code>time bash build.sh --noclean</code></div>
+      </article>
+    
+      
+      <article class="run-card">
+        <div class="run-top">
+          <span class="run-title">Second Incremental Execution</span>
+          <span class="pill success">success</span>
+        </div>
+        <div class="duration">4.728s</div>
+        <div class="command"><code>time bash build.sh --noclean</code></div>
+      </article>
+    
     </section>
 
-    <section class="grid two-col">
-      <div class="panel">
-        <h2>Environment</h2>
-        <table><tr><th>docker_image</th><td>swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031</td></tr>
-<tr><th>ccache_dir</th><td>/home/wpf/.cache/hcomm-ttfhw-ccache</td></tr></table>
-      </div>
-      <div class="panel">
-        <h2>Git</h2>
-        <table><tr><th>branch</th><td>issue-2-build-optimization-foundation</td></tr>
-<tr><th>commit</th><td>3a2714fc30986154b00995e707bb5a251184406f</td></tr>
-<tr><th>dirty</th><td>True</td></tr></table>
-      </div>
-    </section>
+    
+          <section class="panel compare">
+            <h2>Run Comparison</h2>
+            <div class="compare-grid">
+              <div>
+                <span class="label">Delta</span>
+                <strong>17m 13.4s</strong>
+              </div>
+              <div>
+                <span class="label">Speedup</span>
+                <strong>219.6x</strong>
+              </div>
+            </div>
+          </section>
+        
 
-    <section class="panel" style="margin: 18px 0;">
-      <h2>Steps</h2>
-      <table class="steps">
-        <thead>
-          <tr>
-            <th>Step</th>
-            <th>Status</th>
-            <th>Duration</th>
-            <th>Share</th>
-            <th>Command</th>
-          </tr>
-        </thead>
+    
+
+    <section class="panel">
+      <h2>ccache Summary</h2>
+      <table>
         <tbody>
-          <tr><td>ccache_zero</td><td>success</td><td>0.686s</td><td><div class='bar-wrap'><div class='bar' style='width:1.50%'></div></div></td><td><code>ccache -z</code></td></tr>
-<tr><td>ccache_before</td><td>success</td><td>0.471s</td><td><div class='bar-wrap'><div class='bar' style='width:1.50%'></div></div></td><td><code>ccache -s</code></td></tr>
-<tr><td>first_run</td><td>success</td><td>17m 18.1s</td><td><div class='bar-wrap'><div class='bar' style='width:99.35%'></div></div></td><td><code>time bash build.sh --noclean</code></td></tr>
-<tr><td>ccache_after_first_run</td><td>success</td><td>0.470s</td><td><div class='bar-wrap'><div class='bar' style='width:1.50%'></div></div></td><td><code>ccache -s</code></td></tr>
-<tr><td>incremental_run</td><td>success</td><td>4.728s</td><td><div class='bar-wrap'><div class='bar' style='width:1.50%'></div></div></td><td><code>time bash build.sh --noclean</code></td></tr>
-<tr><td>ccache_after_incremental_run</td><td>success</td><td>0.423s</td><td><div class='bar-wrap'><div class='bar' style='width:1.50%'></div></div></td><td><code>ccache -s</code></td></tr>
+          <tr><th>Direct hits</th><td>0</td></tr>
+          <tr><th>Preprocessed hits</th><td>12</td></tr>
+          <tr><th>Misses</th><td>-</td></tr>
+          <tr><th>Hit rate</th><td>-</td></tr>
         </tbody>
       </table>
     </section>
 
-    <section class="grid two-col">
-      <div class="panel">
-        <h2>ccache</h2>
-        <table><tr><th>cache_hit_direct</th><td>0</td></tr>
-<tr><th>cache_hit_preprocessed</th><td>12</td></tr>
-<tr><th>cache_miss</th><td>-</td></tr>
-<tr><th>hit_rate</th><td>-</td></tr></table>
-        <h3 style="margin-top:16px;">After Incremental Run</h3>
-        <pre>Summary:
-  Hits:              12 / 1539 (0.78 %)
-    Direct:           0 / 1539 (0.00 %)
-    Preprocessed:    12 / 1539 (0.78 %)
-  Misses:          1527
-    Direct:        1539
-    Preprocessed:  1527
-  Uncacheable:       45
-Primary storage:
-  Hits:              12 / 3078 (0.39 %)
-  Misses:          3066
-  Cache size (GB): 0.89 / 5.00 (17.82 %)
+    <details>
+      <summary>Execution Steps</summary>
+      <table>
+        <thead>
+          <tr><th>Step</th><th>Status</th><th>Duration</th><th>Command</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ccache_zero</td><td><span class='pill success'>success</span></td><td>0.686s</td><td><code>ccache -z</code></td></tr>
+<tr><td>ccache_before</td><td><span class='pill success'>success</span></td><td>0.471s</td><td><code>ccache -s</code></td></tr>
+<tr><td>first_run</td><td><span class='pill success'>success</span></td><td>17m 18.1s</td><td><code>time bash build.sh --noclean</code></td></tr>
+<tr><td>ccache_after_first_run</td><td><span class='pill success'>success</span></td><td>0.470s</td><td><code>ccache -s</code></td></tr>
+<tr><td>incremental_run</td><td><span class='pill success'>success</span></td><td>4.728s</td><td><code>time bash build.sh --noclean</code></td></tr>
+<tr><td>ccache_after_incremental_run</td><td><span class='pill success'>success</span></td><td>0.423s</td><td><code>ccache -s</code></td></tr>
+        </tbody>
+      </table>
+    </details>
 
-Use the -v/--verbose option for more details.
-</pre>
-      </div>
-      <div class="panel">
-        <h2>Raw JSON</h2>
-        <pre>{
+    <details>
+      <summary>Raw JSON</summary>
+      <pre>{
   &quot;schema_version&quot;: &quot;2.0&quot;,
   &quot;skill&quot;: &quot;hcomm-local-dev-ttfhw&quot;,
   &quot;repo&quot;: &quot;hcomm&quot;,
@@ -326,8 +355,7 @@ Use the -v/--verbose option for more details.
   },
   &quot;total_seconds&quot;: 1044.891
 }</pre>
-      </div>
-    </section>
-  </div>
+    </details>
+  </main>
 </body>
 </html>

@@ -25,277 +25,311 @@ def esc(value):
     return html.escape(str(value))
 
 
-def render_kv_rows(mapping):
-    rows = []
-    for key, value in mapping.items():
-        rows.append(
-            f"<tr><th>{esc(key)}</th><td>{esc(value)}</td></tr>"
-        )
-    return "\n".join(rows)
+def step_by_name(data, name):
+    for step in data.get("steps", []):
+        if step.get("name") == name:
+            return step
+    return {}
 
 
-def render_steps(steps, total_seconds):
+def render_steps(steps):
     rows = []
-    total = float(total_seconds or 0) or 1.0
     for step in steps:
-        width = max(1.5, min(100.0, float(step.get("seconds", 0)) / total * 100.0))
         rows.append(
             "<tr>"
             f"<td>{esc(step.get('name'))}</td>"
-            f"<td>{esc(step.get('status'))}</td>"
+            f"<td><span class='pill {esc(step.get('status'))}'>{esc(step.get('status'))}</span></td>"
             f"<td>{fmt_seconds(step.get('seconds'))}</td>"
-            f"<td><div class='bar-wrap'><div class='bar' style='width:{width:.2f}%'></div></div></td>"
             f"<td><code>{esc(step.get('command'))}</code></td>"
             "</tr>"
         )
     return "\n".join(rows)
 
 
+def run_card(title, step, seconds, command, empty_text):
+    status = step.get("status") or ("not-run" if seconds is None else "-")
+    return f"""
+      <article class="run-card">
+        <div class="run-top">
+          <span class="run-title">{esc(title)}</span>
+          <span class="pill {esc(status)}">{esc(status)}</span>
+        </div>
+        <div class="duration">{fmt_seconds(seconds)}</div>
+        <div class="command"><code>{esc(command if seconds is not None else empty_text)}</code></div>
+      </article>
+    """
+
+
 def render_html(data, source_json):
     result = data.get("result", {})
+    metric = data.get("metric") or data.get("scenario")
     status = data.get("status", "-")
     status_class = "success" if status == "success" else "failed"
-    summary_cards = [
-        ("Metric", data.get("metric") or data.get("scenario")),
-        ("Status", data.get("status")),
-        ("Total", fmt_seconds(data.get("total_seconds") or data.get("ttfhw_seconds"))),
-        ("First Run", fmt_seconds(result.get("first_run_seconds"))),
-        ("Incremental", fmt_seconds(result.get("incremental_run_seconds"))),
-        ("Execution", data.get("execution_mode")),
-        ("Branch", data.get("git", {}).get("branch")),
-        ("Dirty", data.get("git", {}).get("dirty")),
-    ]
-    cards_html = "\n".join(
-        "<div class='card'>"
-        f"<div class='card-label'>{esc(label)}</div>"
-        f"<div class='card-value'>{esc(value)}</div>"
-        "</div>"
-        for label, value in summary_cards
-    )
-
-    env_table = render_kv_rows(data.get("environment", {}))
-    git_table = render_kv_rows(data.get("git", {}))
-
+    command = data.get("command", "")
+    first_step = step_by_name(data, "first_run")
+    incremental_step = step_by_name(data, "incremental_run")
+    first_seconds = result.get("first_run_seconds")
+    incremental_seconds = result.get("incremental_run_seconds")
     ccache = data.get("ccache", {})
-    ccache_table = render_kv_rows(
-        {
-            "cache_hit_direct": ccache.get("cache_hit_direct", "-"),
-            "cache_hit_preprocessed": ccache.get("cache_hit_preprocessed", "-"),
-            "cache_miss": ccache.get("cache_miss", "-"),
-            "hit_rate": ccache.get("hit_rate", "-"),
-        }
-    )
-
     raw_json = html.escape(json.dumps(data, indent=2, ensure_ascii=False))
+    failure = data.get("error")
+
+    comparison = ""
+    if first_seconds is not None and incremental_seconds is not None and first_seconds:
+        ratio = first_seconds / incremental_seconds if incremental_seconds else None
+        saved = first_seconds - incremental_seconds
+        comparison = f"""
+          <section class="panel compare">
+            <h2>Run Comparison</h2>
+            <div class="compare-grid">
+              <div>
+                <span class="label">Delta</span>
+                <strong>{fmt_seconds(saved)}</strong>
+              </div>
+              <div>
+                <span class="label">Speedup</span>
+                <strong>{ratio:.1f}x</strong>
+              </div>
+            </div>
+          </section>
+        """
 
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HCOMM TTFHW View</title>
+  <title>{esc(metric)} - HCOMM TTFHW</title>
   <style>
     :root {{
-      --bg: #f5f1e8;
-      --panel: #fffaf0;
-      --ink: #1e1d1b;
-      --muted: #6b665e;
-      --line: #d7ccba;
-      --accent: #0f766e;
-      --accent-2: #b45309;
-      --fail: #b42318;
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #dadce0;
+      --accent: #0b6bcb;
+      --ok: #137333;
+      --fail: #b3261e;
+      --warn: #8a5a00;
     }}
+
     * {{ box-sizing: border-box; }}
+
     body {{
       margin: 0;
-      font-family: "IBM Plex Sans", "Source Sans 3", sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       color: var(--ink);
-      background:
-        radial-gradient(circle at top right, rgba(180,83,9,0.12), transparent 28%),
-        radial-gradient(circle at left center, rgba(15,118,110,0.12), transparent 35%),
-        var(--bg);
+      background: var(--bg);
     }}
-    .page {{
-      max-width: 1200px;
+
+    main {{
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 32px 20px 56px;
+      padding: 40px 20px 56px;
     }}
-    h1, h2, h3 {{ margin: 0 0 12px; }}
+
+    h1 {{
+      margin: 12px 0 8px;
+      font-size: 34px;
+      line-height: 1.2;
+    }}
+
+    h2 {{
+      margin: 0 0 16px;
+      font-size: 20px;
+    }}
+
     .lede {{
-      margin: 10px 0 24px;
+      margin: 0 0 24px;
       color: var(--muted);
       line-height: 1.5;
     }}
-    .status {{
+
+    .pill {{
       display: inline-block;
-      padding: 6px 10px;
+      padding: 4px 9px;
       border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: rgba(15,118,110,0.12);
-      color: var(--accent);
-    }}
-    .status.failed {{
-      background: rgba(180,35,24,0.12);
-      color: var(--fail);
-    }}
-    .grid {{
-      display: grid;
-      gap: 16px;
-    }}
-    .cards {{
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      margin: 22px 0 28px;
-    }}
-    .card, .panel, .phase-card {{
-      background: rgba(255,250,240,0.86);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 12px 32px rgba(30,29,27,0.05);
-    }}
-    .card {{
-      padding: 16px;
-      min-height: 104px;
-    }}
-    .card-label {{
-      color: var(--muted);
       font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 10px;
-    }}
-    .card-value {{
-      font-size: 24px;
       font-weight: 700;
+      text-transform: uppercase;
+    }}
+
+    .success {{ color: var(--ok); background: #e6f4ea; }}
+    .failed {{ color: var(--fail); background: #fce8e6; }}
+    .not-run {{ color: var(--warn); background: #fef7e0; }}
+
+    .runs {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin: 24px 0 16px;
+    }}
+
+    .run-card, .panel {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }}
+
+    .run-card {{
+      padding: 22px;
+    }}
+
+    .run-top {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }}
+
+    .run-title {{
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }}
+
+    .duration {{
+      margin-bottom: 14px;
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+    }}
+
+    .command {{
+      color: var(--muted);
+      font-size: 14px;
       word-break: break-word;
     }}
-    .two-col {{
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      margin-bottom: 18px;
+
+    code, pre {{
+      font-family: "SFMono-Regular", Consolas, monospace;
     }}
+
     .panel {{
-      padding: 18px;
+      margin-top: 16px;
+      padding: 20px;
     }}
+
+    .compare-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }}
+
+    .compare-grid .label {{
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+    }}
+
+    .compare-grid strong {{
+      font-size: 28px;
+    }}
+
+    .failure {{
+      border-color: #f4b4ae;
+      background: #fff7f6;
+    }}
+
     table {{
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
     }}
+
     th, td {{
-      text-align: left;
       padding: 10px 8px;
       border-bottom: 1px solid var(--line);
+      text-align: left;
       vertical-align: top;
     }}
+
     th {{
-      width: 180px;
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 700;
     }}
-    .steps th, .steps td {{ width: auto; }}
-    .steps thead th {{
-      color: var(--ink);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+
+    details {{
+      margin-top: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 18px;
     }}
-    .bar-wrap {{
-      width: 100%;
-      min-width: 160px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(15,118,110,0.12);
-      overflow: hidden;
+
+    summary {{
+      cursor: pointer;
+      font-weight: 700;
     }}
-    .bar {{
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border-radius: 999px;
-    }}
-    code, pre {{
-      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
-    }}
+
     pre {{
+      max-height: 520px;
+      overflow: auto;
       white-space: pre-wrap;
       word-break: break-word;
-      background: rgba(30,29,27,0.04);
-      border: 1px solid var(--line);
-      border-radius: 12px;
+      color: #303134;
+      background: #f1f3f4;
+      border-radius: 6px;
       padding: 14px;
-      max-height: 480px;
-      overflow: auto;
-    }}
-    .muted {{ color: var(--muted); }}
-    .path {{
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(30,29,27,0.04);
-      border: 1px solid var(--line);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 13px;
     }}
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="status {status_class}">{esc(status)}</div>
-    <h1>HCOMM TTFHW Visualization</h1>
+  <main>
+    <span class="pill {status_class}">{esc(status)}</span>
+    <h1>{esc(metric)}</h1>
     <p class="lede">
-      Metric <strong>{esc(data.get("metric") or data.get("scenario"))}</strong> from <strong>{esc(data.get("started_at"))}</strong>
-      to <strong>{esc(data.get("ended_at"))}</strong>. Source JSON:
-      <span class="path">{esc(source_json)}</span>
+      Fixed TTFHW command: <code>{esc(command)}</code><br>
+      Source JSON: <code>{esc(source_json)}</code>
     </p>
 
-    <section class="grid cards">
-      {cards_html}
+    <section class="runs" aria-label="first and incremental run comparison">
+      {run_card("First Execution", first_step, first_seconds, command, "not executed")}
+      {run_card("Second Incremental Execution", incremental_step, incremental_seconds, command, "not executed because first execution failed")}
     </section>
 
-    <section class="grid two-col">
-      <div class="panel">
-        <h2>Environment</h2>
-        <table>{env_table}</table>
-      </div>
-      <div class="panel">
-        <h2>Git</h2>
-        <table>{git_table}</table>
-      </div>
-    </section>
+    {comparison}
 
-    <section class="panel" style="margin: 18px 0;">
-      <h2>Steps</h2>
-      <table class="steps">
-        <thead>
-          <tr>
-            <th>Step</th>
-            <th>Status</th>
-            <th>Duration</th>
-            <th>Share</th>
-            <th>Command</th>
-          </tr>
-        </thead>
+    {f'''
+    <section class="panel failure">
+      <h2>Failure</h2>
+      <p>{esc(failure)}</p>
+    </section>
+    ''' if failure else ''}
+
+    <section class="panel">
+      <h2>ccache Summary</h2>
+      <table>
         <tbody>
-          {render_steps(data.get("steps", []), data.get("total_seconds") or data.get("ttfhw_seconds"))}
+          <tr><th>Direct hits</th><td>{esc(ccache.get("cache_hit_direct", "-"))}</td></tr>
+          <tr><th>Preprocessed hits</th><td>{esc(ccache.get("cache_hit_preprocessed", "-"))}</td></tr>
+          <tr><th>Misses</th><td>{esc(ccache.get("cache_miss", "-"))}</td></tr>
+          <tr><th>Hit rate</th><td>{esc(ccache.get("hit_rate", "-"))}</td></tr>
         </tbody>
       </table>
     </section>
 
-    <section class="grid two-col">
-      <div class="panel">
-        <h2>ccache</h2>
-        <table>{ccache_table}</table>
-        <h3 style="margin-top:16px;">After Incremental Run</h3>
-        <pre>{esc(ccache.get("after_incremental_run", ccache.get("stats_after", "")))}</pre>
-      </div>
-      <div class="panel">
-        <h2>Raw JSON</h2>
-        <pre>{raw_json}</pre>
-      </div>
-    </section>
-  </div>
+    <details>
+      <summary>Execution Steps</summary>
+      <table>
+        <thead>
+          <tr><th>Step</th><th>Status</th><th>Duration</th><th>Command</th></tr>
+        </thead>
+        <tbody>
+          {render_steps(data.get("steps", []))}
+        </tbody>
+      </table>
+    </details>
+
+    <details>
+      <summary>Raw JSON</summary>
+      <pre>{raw_json}</pre>
+    </details>
+  </main>
 </body>
 </html>
 """
