@@ -1,0 +1,92 @@
+{
+  "schema_version": "2.0",
+  "skill": "hcomm-local-dev-ttfhw",
+  "repo": "hcomm",
+  "metric": "first_build_success",
+  "command": "time bash build.sh --noclean",
+  "status": "success",
+  "started_at": "2026-04-25T16:27:50+08:00",
+  "ended_at": "2026-04-25T16:45:54+08:00",
+  "execution_mode": "docker",
+  "environment": {
+    "docker_image": "swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031",
+    "ccache_dir": "/home/wpf/.cache/hcomm-ttfhw-ccache"
+  },
+  "git": {
+    "branch": "issue-2-build-optimization-foundation",
+    "commit": "3a2714fc30986154b00995e707bb5a251184406f",
+    "dirty": true
+  },
+  "steps": [
+    {
+      "name": "ccache_zero",
+      "command": "ccache -z",
+      "status": "success",
+      "returncode": 0,
+      "started_at": "2026-04-25T16:27:50+08:00",
+      "ended_at": "2026-04-25T16:27:51+08:00",
+      "seconds": 0.686
+    },
+    {
+      "name": "ccache_before",
+      "command": "ccache -s",
+      "status": "success",
+      "returncode": 0,
+      "started_at": "2026-04-25T16:27:51+08:00",
+      "ended_at": "2026-04-25T16:27:51+08:00",
+      "seconds": 0.471
+    },
+    {
+      "name": "first_run",
+      "command": "time bash build.sh --noclean",
+      "status": "success",
+      "returncode": 0,
+      "started_at": "2026-04-25T16:27:51+08:00",
+      "ended_at": "2026-04-25T16:45:48+08:00",
+      "seconds": 1038.111
+    },
+    {
+      "name": "ccache_after_first_run",
+      "command": "ccache -s",
+      "status": "success",
+      "returncode": 0,
+      "started_at": "2026-04-25T16:45:48+08:00",
+      "ended_at": "2026-04-25T16:45:48+08:00",
+      "seconds": 0.47
+    },
+    {
+      "name": "incremental_run",
+      "command": "time bash build.sh --noclean",
+      "status": "success",
+      "returncode": 0,
+      "started_at": "2026-04-25T16:45:48+08:00",
+      "ended_at": "2026-04-25T16:45:53+08:00",
+      "seconds": 4.728
+    },
+    {
+      "name": "ccache_after_incremental_run",
+      "command": "ccache -s",
+      "status": "success",
+      "returncode": 0,
+      "started_at": "2026-04-25T16:45:53+08:00",
+      "ended_at": "2026-04-25T16:45:54+08:00",
+      "seconds": 0.423
+    }
+  ],
+  "ccache": {
+    "before": "Summary:\n  Hits:               0 /    0\n    Direct:           0 /    0\n    Preprocessed:     0 /    0\n  Misses:             0\n    Direct:           0\n    Preprocessed:     0\nPrimary storage:\n  Hits:               0 /    0\n  Misses:             0\n  Cache size (GB): 0.79 / 5.00 (15.81 %)\n\nUse the -v/--verbose option for more details.\n",
+    "after_first_run": "Summary:\n  Hits:              12 / 1539 (0.78 %)\n    Direct:           0 / 1539 (0.00 %)\n    Preprocessed:    12 / 1539 (0.78 %)\n  Misses:          1527\n    Direct:        1539\n    Preprocessed:  1527\n  Uncacheable:       45\nPrimary storage:\n  Hits:              12 / 3078 (0.39 %)\n  Misses:          3066\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n",
+    "after_incremental_run": "Summary:\n  Hits:              12 / 1539 (0.78 %)\n    Direct:           0 / 1539 (0.00 %)\n    Preprocessed:    12 / 1539 (0.78 %)\n  Misses:          1527\n    Direct:        1539\n    Preprocessed:  1527\n  Uncacheable:       45\nPrimary storage:\n  Hits:              12 / 3078 (0.39 %)\n  Misses:          3066\n  Cache size (GB): 0.89 / 5.00 (17.82 %)\n\nUse the -v/--verbose option for more details.\n",
+    "cache_hit_direct": "0",
+    "cache_hit_preprocessed": "12"
+  },
+  "result": {
+    "first_run_seconds": 1038.111,
+    "incremental_run_seconds": 4.728
+  },
+  "artifacts": {
+    "json": "/home/wpf/codex/hcomm/output/ttfhw/first_build_success/20260425T162750+0800.json",
+    "stdout_log": "/home/wpf/codex/hcomm/output/ttfhw/logs/first_build_success_20260425T162750+0800.log"
+  },
+  "total_seconds": 1044.891
+}
