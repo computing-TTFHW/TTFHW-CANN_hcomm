@@ -127,24 +127,6 @@
       padding: 20px;
     }
 
-    .compare-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-    }
-
-    .compare-grid .label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      text-transform: uppercase;
-    }
-
-    .compare-grid strong {
-      font-size: 28px;
-    }
-
     .failure, .failure-detail {
       border-color: #f4b4ae;
       background: #fff7f6;
@@ -235,20 +217,26 @@
     </section>
 
     
-          <section class="panel compare">
-            <h2>Run Comparison</h2>
-            <div class="compare-grid">
-              <div>
-                <span class="label">Delta</span>
-                <strong>17m 13.4s</strong>
-              </div>
-              <div>
-                <span class="label">Speedup</span>
-                <strong>219.6x</strong>
-              </div>
-            </div>
-          </section>
-        
+    <section class="panel">
+      <h2>Execution Summary</h2>
+      <table>
+        <tbody>
+          <tr><th>Command</th><td><code>time bash build.sh --noclean</code></td></tr>
+<tr><th>Execution mode</th><td>docker</td></tr>
+<tr><th>Docker image</th><td>swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031</td></tr>
+<tr><th>Docker version</th><td>Docker version 29.2.1, build a5c7197</td></tr>
+<tr><th>Host CPU</th><td>13th Gen Intel(R) Core(TM) i7-13700</td></tr>
+<tr><th>Host CPU count</th><td>24</td></tr>
+<tr><th>Host memory</th><td>15 GiB</td></tr>
+<tr><th>Host swap</th><td>4.0 GiB</td></tr>
+<tr><th>NPU requirement</th><td>NPU device was not required for these TTFHW measurements; execution used Docker on the host CPU environment.</td></tr>
+<tr><th>Started</th><td>2026-04-25T16:27:50+08:00</td></tr>
+<tr><th>Ended</th><td>2026-04-25T16:45:54+08:00</td></tr>
+<tr><th>Total duration</th><td>17m 24.9s</td></tr>
+        </tbody>
+      </table>
+    </section>
+    
 
     <section class="panel">
       <h2>ccache Summary</h2>
@@ -372,7 +360,17 @@
   &quot;artifacts&quot;: {
     &quot;json&quot;: &quot;/home/wpf/codex/hcomm/output/ttfhw/first_build_success/20260425T162750+0800.json&quot;
   },
-  &quot;total_seconds&quot;: 1044.891
+  &quot;total_seconds&quot;: 1044.891,
+  &quot;measurement_context&quot;: {
+    &quot;docker_image&quot;: &quot;swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031&quot;,
+    &quot;docker_version&quot;: &quot;Docker version 29.2.1, build a5c7197&quot;,
+    &quot;host_arch&quot;: &quot;x86_64&quot;,
+    &quot;host_cpu_model&quot;: &quot;13th Gen Intel(R) Core(TM) i7-13700&quot;,
+    &quot;host_cpu_count&quot;: 24,
+    &quot;host_memory&quot;: &quot;15 GiB&quot;,
+    &quot;host_swap&quot;: &quot;4.0 GiB&quot;,
+    &quot;npu_requirement&quot;: &quot;NPU device was not required for these TTFHW measurements; execution used Docker on the host CPU environment.&quot;
+  }
 }</pre>
     </details>
   </main>

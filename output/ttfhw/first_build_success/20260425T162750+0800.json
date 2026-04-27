@@ -87,5 +87,15 @@
   "artifacts": {
     "json": "/home/wpf/codex/hcomm/output/ttfhw/first_build_success/20260425T162750+0800.json"
   },
-  "total_seconds": 1044.891
+  "total_seconds": 1044.891,
+  "measurement_context": {
+    "docker_image": "swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031",
+    "docker_version": "Docker version 29.2.1, build a5c7197",
+    "host_arch": "x86_64",
+    "host_cpu_model": "13th Gen Intel(R) Core(TM) i7-13700",
+    "host_cpu_count": 24,
+    "host_memory": "15 GiB",
+    "host_swap": "4.0 GiB",
+    "npu_requirement": "NPU device was not required for these TTFHW measurements; execution used Docker on the host CPU environment."
+  }
 }

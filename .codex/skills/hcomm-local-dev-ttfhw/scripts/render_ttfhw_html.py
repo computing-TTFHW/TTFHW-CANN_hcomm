@@ -81,6 +81,36 @@ def summary_card(data, first_seconds, incremental_seconds):
     """
 
 
+def render_execution_summary(data):
+    context = data.get("measurement_context", {})
+    env = data.get("environment", {})
+    rows = [
+        ("Command", f"<code>{esc(data.get('command'))}</code>"),
+        ("Execution mode", esc(data.get("execution_mode"))),
+        ("Docker image", esc(context.get("docker_image") or env.get("docker_image"))),
+        ("Docker version", esc(context.get("docker_version", "-"))),
+        ("Host CPU", esc(context.get("host_cpu_model", "-"))),
+        ("Host CPU count", esc(context.get("host_cpu_count", "-"))),
+        ("Host memory", esc(context.get("host_memory", "-"))),
+        ("Host swap", esc(context.get("host_swap", "-"))),
+        ("NPU requirement", esc(context.get("npu_requirement", "-"))),
+        ("Started", esc(data.get("started_at"))),
+        ("Ended", esc(data.get("ended_at"))),
+        ("Total duration", fmt_seconds(data.get("total_seconds"))),
+    ]
+    table_rows = "\n".join(f"<tr><th>{label}</th><td>{value}</td></tr>" for label, value in rows)
+    return f"""
+    <section class="panel">
+      <h2>Execution Summary</h2>
+      <table>
+        <tbody>
+          {table_rows}
+        </tbody>
+      </table>
+    </section>
+    """
+
+
 def render_failure_analysis(data):
     analysis = data.get("failure_analysis")
     if not analysis:
@@ -128,26 +158,6 @@ def render_html(data, source_json):
     ccache = data.get("ccache", {})
     raw_json = html.escape(json.dumps(data, indent=2, ensure_ascii=False))
     failure_analysis = render_failure_analysis(data)
-
-    comparison = ""
-    if first_seconds is not None and incremental_seconds is not None and first_seconds:
-        ratio = first_seconds / incremental_seconds if incremental_seconds else None
-        saved = first_seconds - incremental_seconds
-        comparison = f"""
-          <section class="panel compare">
-            <h2>Run Comparison</h2>
-            <div class="compare-grid">
-              <div>
-                <span class="label">Delta</span>
-                <strong>{fmt_seconds(saved)}</strong>
-              </div>
-              <div>
-                <span class="label">Speedup</span>
-                <strong>{ratio:.1f}x</strong>
-              </div>
-            </div>
-          </section>
-        """
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -278,24 +288,6 @@ def render_html(data, source_json):
       padding: 20px;
     }}
 
-    .compare-grid {{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-    }}
-
-    .compare-grid .label {{
-      display: block;
-      margin-bottom: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      text-transform: uppercase;
-    }}
-
-    .compare-grid strong {{
-      font-size: 28px;
-    }}
-
     .failure, .failure-detail {{
       border-color: #f4b4ae;
       background: #fff7f6;
@@ -359,7 +351,7 @@ def render_html(data, source_json):
       {summary_card(data, first_seconds, incremental_seconds)}
     </section>
 
-    {comparison}
+    {render_execution_summary(data)}
 
     <section class="panel">
       <h2>ccache Summary</h2>

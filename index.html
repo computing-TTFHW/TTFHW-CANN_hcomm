@@ -65,6 +65,14 @@
       border-color: var(--accent);
     }
 
+    .panel {
+      margin-bottom: 16px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
     .status {
       display: inline-block;
       margin-bottom: 14px;
@@ -120,6 +128,22 @@
     <p class="summary">
       Entry point for hcomm TTFHW skill outputs and validation results.
     </p>
+
+    <section class="panel" aria-label="measurement environment">
+      <h2>Execution Summary</h2>
+      <dl>
+        <dt>Docker image</dt>
+        <dd>swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031</dd>
+        <dt>Docker version</dt>
+        <dd>29.2.1</dd>
+        <dt>Host CPU</dt>
+        <dd>13th Gen Intel(R) Core(TM) i7-13700, 24 CPUs</dd>
+        <dt>Host memory</dt>
+        <dd>15 GiB RAM, 4 GiB swap</dd>
+        <dt>NPU</dt>
+        <dd>Not required for these TTFHW measurements.</dd>
+      </dl>
+    </section>
 
     <section class="grid" aria-label="TTFHW result reports">
       <a class="card" href="output/ttfhw/visualizations/first_build_success_20260425T162750+0800.html">

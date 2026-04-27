@@ -35,6 +35,18 @@ Direct report links:
 | `first_build_success` | Success | `1038.111s` | `4.728s` | Incremental build completed successfully. |
 | `first_ut_success` | Failed | `58678.951s` | `-` | First UT build failed, so the second incremental run was not executed. The raw log files are not stored in this repository. |
 
+## Measurement Environment
+
+| Item | Value |
+| --- | --- |
+| Execution mode | Docker |
+| Docker image | `swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031` |
+| Docker version | `29.2.1` |
+| Host CPU | `13th Gen Intel(R) Core(TM) i7-13700` |
+| Host CPU count | `24` |
+| Host memory | `15 GiB RAM, 4 GiB swap` |
+| NPU | Not required for these TTFHW measurements. |
+
 ## Repository Layout
 
 ```text
