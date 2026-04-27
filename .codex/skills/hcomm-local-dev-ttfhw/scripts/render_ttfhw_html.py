@@ -60,6 +60,40 @@ def run_card(title, step, seconds, command, empty_text):
     """
 
 
+def render_failure_analysis(data):
+    analysis = data.get("failure_analysis")
+    if not analysis:
+        failure = data.get("error")
+        if not failure:
+            return ""
+        return f"""
+    <section class="panel failure">
+      <h2>Failure</h2>
+      <p>{esc(failure)}</p>
+    </section>
+        """
+
+    evidence = "".join(f"<li>{esc(item)}</li>" for item in analysis.get("evidence", []))
+    return f"""
+    <section class="panel failure">
+      <h2>Failure Analysis</h2>
+      <table>
+        <tbody>
+          <tr><th>Category</th><td>{esc(analysis.get("category"))}</td></tr>
+          <tr><th>Summary</th><td>{esc(analysis.get("summary"))}</td></tr>
+          <tr><th>Failed step</th><td>{esc(analysis.get("failed_step"))}</td></tr>
+          <tr><th>Failed command</th><td><code>{esc(analysis.get("failed_command"))}</code></td></tr>
+          <tr><th>Return code</th><td>{esc(analysis.get("returncode"))}</td></tr>
+          <tr><th>Impact</th><td>{esc(analysis.get("impact"))}</td></tr>
+          <tr><th>Next step</th><td>{esc(analysis.get("recommended_next_step"))}</td></tr>
+        </tbody>
+      </table>
+      <h3>Evidence</h3>
+      <ul>{evidence}</ul>
+    </section>
+    """
+
+
 def render_html(data, source_json):
     result = data.get("result", {})
     metric = data.get("metric") or data.get("scenario")
@@ -72,7 +106,7 @@ def render_html(data, source_json):
     incremental_seconds = result.get("incremental_run_seconds")
     ccache = data.get("ccache", {})
     raw_json = html.escape(json.dumps(data, indent=2, ensure_ascii=False))
-    failure = data.get("error")
+    failure_analysis = render_failure_analysis(data)
 
     comparison = ""
     if first_seconds is not None and incremental_seconds is not None and first_seconds:
@@ -294,12 +328,7 @@ def render_html(data, source_json):
 
     {comparison}
 
-    {f'''
-    <section class="panel failure">
-      <h2>Failure</h2>
-      <p>{esc(failure)}</p>
-    </section>
-    ''' if failure else ''}
+    {failure_analysis}
 
     <section class="panel">
       <h2>ccache Summary</h2>

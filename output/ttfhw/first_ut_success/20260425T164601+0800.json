@@ -57,5 +57,20 @@
     "json": "/home/wpf/codex/hcomm/output/ttfhw/first_ut_success/20260425T164601+0800.json"
   },
   "error": "first run failed",
-  "total_seconds": 58679.785
+  "total_seconds": 58679.785,
+  "failure_analysis": {
+    "category": "resource_exhaustion_during_ut_build",
+    "summary": "The first UT run did not reach test execution. It failed during parallel C++ compilation after multiple cc1plus compiler processes were killed, which is consistent with memory pressure or OOM in the Docker build environment.",
+    "failed_step": "first_run",
+    "failed_command": "time bash build.sh --ut --noclean",
+    "returncode": 2,
+    "evidence": [
+      "The first_run step returned code 2 after 58678.951 seconds.",
+      "Historical captured build output contained repeated: c++: fatal error: Killed signal terminated program cc1plus.",
+      "Failures occurred while compiling multiple UT objects such as hccl_api_base_test.cc.o and framework/resource UT targets.",
+      "Because the first run failed, the second incremental UT run was not executed."
+    ],
+    "impact": "first_ut_success is unresolved for this measurement; incremental UT timing is unavailable.",
+    "recommended_next_step": "Re-run first_ut_success with lower build parallelism or a larger-memory Docker environment, then regenerate the JSON and visualization."
+  }
 }
