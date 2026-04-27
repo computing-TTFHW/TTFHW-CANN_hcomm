@@ -88,6 +88,19 @@ def ccache_delta(before, after):
     return {"hits": hits, "lookups": lookups, "hit_rate": f"{hits / lookups * 100:.2f}%", "note": ""}
 
 
+def display_ccache_dir(execution_mode, ccache_dir):
+    if execution_mode == "docker":
+        return str(CONTAINER_CCACHE)
+    return "host-provided ccache directory"
+
+
+def display_artifact_path(path, repo_root):
+    try:
+        return str(path.relative_to(repo_root))
+    except ValueError:
+        return path.name
+
+
 def add_incremental_ccache_stats(payload):
     ccache = payload["ccache"]
     after_first = parse_ccache_summary(ccache.get("after_first_run", ""))
@@ -181,7 +194,7 @@ def run_metric(args):
         "execution_mode": args.execution_mode,
         "environment": {
             "docker_image": args.docker_image if args.execution_mode == "docker" else "",
-            "ccache_dir": str(Path(args.ccache_dir).expanduser()),
+            "ccache_dir": display_ccache_dir(args.execution_mode, args.ccache_dir),
         },
         "git": git_info(repo_root),
         "steps": [],
@@ -191,7 +204,7 @@ def run_metric(args):
             "incremental_run_seconds": None,
         },
         "artifacts": {
-            "json": str(json_path),
+            "json": display_artifact_path(json_path, repo_root),
         },
     }
 

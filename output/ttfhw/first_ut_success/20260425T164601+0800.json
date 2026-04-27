@@ -10,7 +10,7 @@
   "execution_mode": "docker",
   "environment": {
     "docker_image": "swr.cn-north-4.myhuaweicloud.com/ci_cann/ubuntu24.04_x86:lv6_v1.1031",
-    "ccache_dir": "/home/wpf/.cache/hcomm-ttfhw-ccache"
+    "ccache_dir": "/home/jenkins/.cache/ccache"
   },
   "git": {
     "branch": "issue-2-build-optimization-foundation",
@@ -74,7 +74,7 @@
     "incremental_run_seconds": null
   },
   "artifacts": {
-    "json": "/home/wpf/codex/hcomm/output/ttfhw/first_ut_success/20260425T164601+0800.json"
+    "json": "output/ttfhw/first_ut_success/20260425T164601+0800.json"
   },
   "error": "first run failed",
   "total_seconds": 58679.785,

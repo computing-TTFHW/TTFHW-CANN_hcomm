@@ -25,6 +25,13 @@ def esc(value):
     return html.escape(str(value))
 
 
+def display_path(path):
+    try:
+        return str(path.relative_to(Path.cwd()))
+    except ValueError:
+        return path.name
+
+
 def step_by_name(data, name):
     for step in data.get("steps", []):
         if step.get("name") == name:
@@ -408,6 +415,7 @@ def main():
 
     json_path = Path(args.json_path).resolve()
     data = json.loads(json_path.read_text(encoding="utf-8"))
+    source_json = display_path(json_path)
 
     if args.output:
         output_path = Path(args.output).resolve()
@@ -416,7 +424,7 @@ def main():
         output_path = root / "visualizations" / f"{json_path.stem}.html"
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(render_html(data, str(json_path)), encoding="utf-8")
+    output_path.write_text(render_html(data, source_json), encoding="utf-8")
     print(output_path)
 
 
