@@ -1,6 +1,6 @@
 ---
 name: hcomm-local-dev-ttfhw
-description: Measure TTFHW for the current hcomm repository only. Use exactly two metrics: `first_build_success` with `time bash build.sh --noclean`, and `first_ut_success` with `time bash build.sh --ut --noclean`; each metric records first-run duration and second-run incremental duration under `output/ttfhw/`.
+description: "Measure TTFHW for the current hcomm repository only. Use exactly two metrics: `first_build_success` with `time bash build.sh --noclean`, and `first_ut_success` with `time bash build.sh --ut --noclean`; each metric records first-run duration and second-run incremental duration under `output/ttfhw/`."
 ---
 
 # HCOMM Local Dev TTFHW
