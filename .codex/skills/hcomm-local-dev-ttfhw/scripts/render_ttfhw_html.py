@@ -60,6 +60,27 @@ def run_card(title, step, seconds, command, empty_text):
     """
 
 
+def summary_text(data, first_seconds, incremental_seconds):
+    analysis = data.get("failure_analysis") or {}
+    if data.get("status") == "failed":
+        return analysis.get("summary") or data.get("error") or "The metric failed before an incremental run could be measured."
+    if first_seconds is not None and incremental_seconds is not None:
+        return f"First execution completed in {fmt_seconds(first_seconds)}; second incremental execution completed in {fmt_seconds(incremental_seconds)}."
+    return "The metric completed, but one or more timing fields are unavailable."
+
+
+def summary_card(data, first_seconds, incremental_seconds):
+    return f"""
+      <article class="run-card summary-card">
+        <div class="run-top">
+          <span class="run-title">Summary</span>
+          <span class="pill {esc(data.get("status", "-"))}">{esc(data.get("status", "-"))}</span>
+        </div>
+        <p class="summary-text">{esc(summary_text(data, first_seconds, incremental_seconds))}</p>
+      </article>
+    """
+
+
 def render_failure_analysis(data):
     analysis = data.get("failure_analysis")
     if not analysis:
@@ -67,16 +88,16 @@ def render_failure_analysis(data):
         if not failure:
             return ""
         return f"""
-    <section id="failure-analysis" class="panel failure">
-      <h2>Failure</h2>
+    <details id="failure-analysis" class="failure-detail">
+      <summary>Failure Analysis</summary>
       <p>{esc(failure)}</p>
-    </section>
+    </details>
         """
 
     evidence = "".join(f"<li>{esc(item)}</li>" for item in analysis.get("evidence", []))
     return f"""
-    <section id="failure-analysis" class="panel failure">
-      <h2>Failure Analysis</h2>
+    <details id="failure-analysis" class="failure-detail">
+      <summary>Failure Analysis</summary>
       <table>
         <tbody>
           <tr><th>Category</th><td>{esc(analysis.get("category"))}</td></tr>
@@ -90,7 +111,7 @@ def render_failure_analysis(data):
       </table>
       <h3>Evidence</h3>
       <ul>{evidence}</ul>
-    </section>
+    </details>
     """
 
 
@@ -192,7 +213,7 @@ def render_html(data, source_json):
     .failed {{ color: var(--fail); background: #fce8e6; }}
     .not-run {{ color: var(--warn); background: #fef7e0; }}
 
-    .runs {{
+    .core-grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 16px;
@@ -237,6 +258,17 @@ def render_html(data, source_json):
       word-break: break-word;
     }}
 
+    .summary-card {{
+      border-color: #c4d7f2;
+      background: #f8fbff;
+    }}
+
+    .summary-text {{
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.5;
+    }}
+
     code, pre {{
       font-family: "SFMono-Regular", Consolas, monospace;
     }}
@@ -264,7 +296,7 @@ def render_html(data, source_json):
       font-size: 28px;
     }}
 
-    .failure {{
+    .failure, .failure-detail {{
       border-color: #f4b4ae;
       background: #fff7f6;
     }}
@@ -321,11 +353,10 @@ def render_html(data, source_json):
       Source JSON: <code>{esc(source_json)}</code>
     </p>
 
-    {failure_analysis}
-
-    <section class="runs" aria-label="first and incremental run comparison">
+    <section class="core-grid" aria-label="TTFHW core result blocks">
       {run_card("First Execution", first_step, first_seconds, command, "not executed")}
       {run_card("Second Incremental Execution", incremental_step, incremental_seconds, command, "not executed because first execution failed")}
+      {summary_card(data, first_seconds, incremental_seconds)}
     </section>
 
     {comparison}
@@ -353,6 +384,8 @@ def render_html(data, source_json):
         </tbody>
       </table>
     </details>
+
+    {failure_analysis}
 
     <details>
       <summary>Raw JSON</summary>

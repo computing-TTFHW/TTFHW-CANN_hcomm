@@ -60,7 +60,7 @@
   "total_seconds": 58679.785,
   "failure_analysis": {
     "category": "resource_exhaustion_during_ut_build",
-    "summary": "The first UT run did not reach test execution. It failed during parallel C++ compilation after multiple cc1plus compiler processes were killed, which is consistent with memory pressure or OOM in the Docker build environment.",
+    "summary": "UT failed during parallel compilation because multiple cc1plus processes were killed, likely due to Docker memory pressure/OOM.",
     "failed_step": "first_run",
     "failed_command": "time bash build.sh --ut --noclean",
     "returncode": 2,

@@ -62,7 +62,7 @@
     .failed { color: var(--fail); background: #fce8e6; }
     .not-run { color: var(--warn); background: #fef7e0; }
 
-    .runs {
+    .core-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 16px;
@@ -107,6 +107,17 @@
       word-break: break-word;
     }
 
+    .summary-card {
+      border-color: #c4d7f2;
+      background: #f8fbff;
+    }
+
+    .summary-text {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
     code, pre {
       font-family: "SFMono-Regular", Consolas, monospace;
     }
@@ -134,7 +145,7 @@
       font-size: 28px;
     }
 
-    .failure {
+    .failure, .failure-detail {
       border-color: #f4b4ae;
       background: #fff7f6;
     }
@@ -191,9 +202,7 @@
       Source JSON: <code>/home/wpf/codex/TTFHW-CANN_hcomm/output/ttfhw/first_build_success/20260425T162750+0800.json</code>
     </p>
 
-    
-
-    <section class="runs" aria-label="first and incremental run comparison">
+    <section class="core-grid" aria-label="TTFHW core result blocks">
       
       <article class="run-card">
         <div class="run-top">
@@ -212,6 +221,15 @@
         </div>
         <div class="duration">4.728s</div>
         <div class="command"><code>time bash build.sh --noclean</code></div>
+      </article>
+    
+      
+      <article class="run-card summary-card">
+        <div class="run-top">
+          <span class="run-title">Summary</span>
+          <span class="pill success">success</span>
+        </div>
+        <p class="summary-text">First execution completed in 17m 18.1s; second incremental execution completed in 4.728s.</p>
       </article>
     
     </section>
@@ -260,6 +278,8 @@
         </tbody>
       </table>
     </details>
+
+    
 
     <details>
       <summary>Raw JSON</summary>
